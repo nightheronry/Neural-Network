@@ -5,46 +5,46 @@ import math
 import numpy
 import matplotlib.pyplot as plt
 learning_rate=0.1
-def read_file():#讀檔
+def read_file():# reading file
     file=open("iris2.data","r")
     original_data_set=[]
-    for i in csv.reader(file):#解析CSV檔案
+    for i in csv.reader(file):# parsing  CSV file
         for j in range(5):
             original_data_set.append(i[j])
     return original_data_set
-def split_data(original_data_set):#分切資料
+def split_data(original_data_set):# spliting file to training set and test set
     training_set=[]
     test_set=[]
-    for i in range(len(original_data_set)):#奇數資料當訓練 偶數當測試
+    for i in range(len(original_data_set)):# odd files:training set  even files:test set
         if i%10<5:
             training_set.append(original_data_set[i])
         else:
             test_set.append(original_data_set[i])
-    return training_set,test_set#回傳
-def sigmoid(y): #activation function
+    return training_set,test_set#return
+def sigmoid(y): # activation function
     output=1.0/(1.0+math.exp(-(y)))
     return output
 #input?HIDDEN LAYER?WEIGHT
-def update_weight(W1,W2,Theta,i,Hidden_Layer_Output,ans,output):#更新WEIGHT 算出該變化的量後回傳
+def update_weight(W1,W2,Theta,i,Hidden_Layer_Output,ans,output):#updating WEIGHT return variation 
     DW1=[[0,0,0],[0,0,0],[0,0,0],[0,0,0]]
     DW2=[[0,0],[0,0],[0,0]]
     DT=[0,0,0,0,0]
     local_gradient=[0,0,0,0,0]
-    local_gradient[3]=output[0]*(1-output[0])*(ans[0]-output[0])#算LOCAL_GRADIENT[3]..對應的是OUTPUT LAYER
-    local_gradient[4]=output[1]*(1-output[1])*(ans[1]-output[1])#算LOCAL_GRADIENT[4]..對應的是OUTPUT LAYER
-    DW2[0][0]=learning_rate*Hidden_Layer_Output[0]*local_gradient[3]#算HIDDEN[0]->OUTPUT[0] WEIGHT 該變化的值
-    DW2[0][1]=learning_rate*Hidden_Layer_Output[0]*local_gradient[4]#算HIDDEN[0]->OUTPUT[0] WEIGHT 該變化的值
-    DW2[1][0]=learning_rate*Hidden_Layer_Output[1]*local_gradient[3]#算HIDDEN[1]->OUTPUT[1] WEIGHT 該變化的值
-    DW2[1][1]=learning_rate*Hidden_Layer_Output[1]*local_gradient[4]#算HIDDEN[1]->OUTPUT[1] WEIGHT 該變化的值
-    DW2[2][0]=learning_rate*Hidden_Layer_Output[2]*local_gradient[3]#算HIDDEN[2]->OUTPUT[2] WEIGHT 該變化的值
-    DW2[2][1]=learning_rate*Hidden_Layer_Output[2]*local_gradient[4]#算HIDDEN[2]->OUTPUT[2] WEIGHT 該變化的值
-    DT[3]=learning_rate*(-1)*local_gradient[3]#算THETA..對應的是OUTPUT LAYER
-    DT[4]=learning_rate*(-1)*local_gradient[4]#算THETA..對應的是OUTPUT LAYER
+    local_gradient[3]=output[0]*(1-output[0])*(ans[0]-output[0])# calculate LOCAL_GRADIENT[3]..corresponding OUTPUT LAYER
+    local_gradient[4]=output[1]*(1-output[1])*(ans[1]-output[1])# calculate LOCAL_GRADIENT[4]..corresponding OUTPUT LAYER
+    DW2[0][0]=learning_rate*Hidden_Layer_Output[0]*local_gradient[3]# calculate variation in HIDDEN[0]->OUTPUT[0] WEIGHT
+    DW2[0][1]=learning_rate*Hidden_Layer_Output[0]*local_gradient[4]# calculate variation in HIDDEN[0]->OUTPUT[0] WEIGHT
+    DW2[1][0]=learning_rate*Hidden_Layer_Output[1]*local_gradient[3]# calculate variation in HIDDEN[1]->OUTPUT[1] WEIGHT
+    DW2[1][1]=learning_rate*Hidden_Layer_Output[1]*local_gradient[4]# calculate variation in HIDDEN[1]->OUTPUT[1] WEIGHT
+    DW2[2][0]=learning_rate*Hidden_Layer_Output[2]*local_gradient[3]# calculate variation in HIDDEN[2]->OUTPUT[2] WEIGHT
+    DW2[2][1]=learning_rate*Hidden_Layer_Output[2]*local_gradient[4]# calculate variation in HIDDEN[2]->OUTPUT[2] WEIGHT
+    DT[3]=learning_rate*(-1)*local_gradient[3]#calculate THETA..corresponding OUTPUT LAYER
+    DT[4]=learning_rate*(-1)*local_gradient[4]#calculate THETA..corresponding OUTPUT LAYER
     #
     local_gradient[0]=Hidden_Layer_Output[0]*(1-Hidden_Layer_Output[0])*(local_gradient[3]*W2[0][0]+local_gradient[4]*W2[0][1])#算LOCAL_GRADIENT[0]..對應的是Hidden_Layer
     local_gradient[1]=Hidden_Layer_Output[1]*(1-Hidden_Layer_Output[1])*(local_gradient[3]*W2[1][0]+local_gradient[4]*W2[1][1])#算LOCAL_GRADIENT[1]..對應的是Hidden_Layer
     local_gradient[2]=Hidden_Layer_Output[2]*(1-Hidden_Layer_Output[2])*(local_gradient[3]*W2[2][0]+local_gradient[4]*W2[2][1])#算LOCAL_GRADIENT[2]..對應的是Hidden_Layer
-    DW1[0][0]=learning_rate*float(i[0])*local_gradient[0]#算INPUT[0]->HIDDEN[0] WEIGHT 該變化的值
+    DW1[0][0]=learning_rate*float(i[0])*local_gradient[0]#calculate variation in INPUT[0]->HIDDEN[0] WEIGHT
     DW1[0][1]=learning_rate*float(i[0])*local_gradient[1]#              :
     DW1[0][2]=learning_rate*float(i[0])*local_gradient[2]#              :
     DW1[1][0]=learning_rate*float(i[1])*local_gradient[0]#              :
@@ -55,10 +55,10 @@ def update_weight(W1,W2,Theta,i,Hidden_Layer_Output,ans,output):#更新WEIGHT �
     DW1[2][2]=learning_rate*float(i[2])*local_gradient[2]#              :
     DW1[3][0]=learning_rate*float(i[3])*local_gradient[0]#              :
     DW1[3][1]=learning_rate*float(i[3])*local_gradient[1]#              :
-    DW1[3][2]=learning_rate*float(i[3])*local_gradient[2]#算HIDDEN[3]->OUTPUT[2] WEIGHT 該變化的值
-    DT[0]=learning_rate*(-1)*local_gradient[0]#算THETA..對應的是Hidden_Layer
-    DT[1]=learning_rate*(-1)*local_gradient[1]#算THETA..對應的是Hidden_Layer
-    DT[2]=learning_rate*(-1)*local_gradient[2]#算THETA..對應的是Hidden_Layer
+    DW1[3][2]=learning_rate*float(i[3])*local_gradient[2]#calculate variation in HIDDEN[3]->OUTPUT[2] WEIGHT
+    DT[0]=learning_rate*(-1)*local_gradient[0]# calculate THETA..對應的是Hidden_Layer
+    DT[1]=learning_rate*(-1)*local_gradient[1]# calculate THETA..對應的是Hidden_Layer
+    DT[2]=learning_rate*(-1)*local_gradient[2]# calculate THETA..對應的是Hidden_Layer
     return DW1,DW2,DT#回傳
 def training(W1,W2,Theta,training_set, round):
     Hidden_Layer_Output=[0,0,0]
